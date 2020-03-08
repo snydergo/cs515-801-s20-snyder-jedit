@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="sources1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/build_eclipse/classes/core/lib/sources/hamcrest-library-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build_eclipse/classes/core/lib/sources/jsr305-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build_eclipse/classes/core/lib/sources/junit-dep-sources.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

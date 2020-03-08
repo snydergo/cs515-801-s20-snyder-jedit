@@ -282,6 +282,8 @@ class HyperSearchRequest extends Task
 
 				int newLine = buffer.getLineOfOffset(
 					offset + match.start);
+
+				/* Here is where it gets skipped if there are multiple catches in one line */
 				if(lastResult == null || lastResult.line != newLine)
 				{
 					lastResult = new HyperSearchResult(
@@ -292,6 +294,16 @@ class HyperSearchRequest extends Task
 						selectNode = child;
 					bufferNode.add(child);
 				}
+				/*else if(lastResult.line == newLine)
+				{
+					lastResult = new HyperSearchResult(
+							buffer,newLine);
+					DefaultMutableTreeNode child = new DefaultMutableTreeNode(
+							lastResult, false);
+					if (lastResult.line == caretLine)
+						selectNode = child;
+					bufferNode.add(child);
+				}*/
 
 				lastResult.addOccur(offset + match.start,
 					offset + match.end);

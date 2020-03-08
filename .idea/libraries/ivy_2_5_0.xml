@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ivy-2.5.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/build_eclipse/classes/core/lib/ivy/ivy-2.5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

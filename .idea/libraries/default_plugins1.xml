@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="default-plugins1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/build_eclipse/classes/core/lib/default-plugins/QuickNotepad.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build_eclipse/classes/core/lib/default-plugins/MacOSX.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
