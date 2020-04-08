@@ -28,7 +28,7 @@ public class NumericTextConstraints {
     }
 
     public boolean isPositiveOnly() {
-        return this.integerOnly;
+        return this.positiveOnly;
     }
 
     public Number getMinValue(){
