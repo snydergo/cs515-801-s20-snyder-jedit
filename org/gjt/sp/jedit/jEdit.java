@@ -3765,7 +3765,7 @@ public class jEdit
 	/**
 	 * Load system properties.
 	 */
-	private static void initSystemProperties()
+	public static void initSystemProperties()
 	{
 		propMgr = new PropertyManager();
 

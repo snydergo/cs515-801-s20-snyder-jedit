@@ -43,10 +43,7 @@ import org.gjt.sp.util.SyntaxUtilities;
  */
 public class NumericTextField extends JTextField implements ComboBoxEditor
 {
-	private final boolean positiveOnly;
-	private final boolean integerOnly;
-	private Number minValue;
-	private Number maxValue;
+	private NumericTextConstraints constraints;
 	private SyntaxStyle invalidStyle;
 	private Color defaultBackground;
 	private Color defaultForeground;
@@ -59,10 +56,7 @@ public class NumericTextField extends JTextField implements ComboBoxEditor
 	public NumericTextField(String text, boolean positiveOnly)
 	{
 		super(text);
-		this.positiveOnly = positiveOnly;
-		integerOnly = true;
-		minValue = positiveOnly ? new Integer(0) : Integer.MIN_VALUE;
-		maxValue = Integer.MAX_VALUE;
+		constraints = new NumericTextConstraints(positiveOnly, true);
 		addFilter();
 		loadInvalidStyle();
 	}
@@ -70,18 +64,7 @@ public class NumericTextField extends JTextField implements ComboBoxEditor
 	public NumericTextField(String text, boolean positiveOnly, boolean integerOnly)
 	{
 		super(text);
-		this.positiveOnly = positiveOnly;
-		this.integerOnly = integerOnly;
-		if (integerOnly)
-		{
-			minValue = positiveOnly ? new Integer(0) : Integer.MIN_VALUE;
-			maxValue = Integer.MAX_VALUE;
-		}
-		else 
-		{
-			minValue = positiveOnly ? new Float(0.0) : Float.MIN_VALUE;
-			maxValue = Float.MAX_VALUE;
-		}
+		constraints = new NumericTextConstraints(positiveOnly, integerOnly);
 		addFilter();
 		loadInvalidStyle();
 	}
@@ -89,10 +72,7 @@ public class NumericTextField extends JTextField implements ComboBoxEditor
 	public NumericTextField(String text, int columns, boolean positiveOnly) 
 	{
 		super(text, columns);
-		this.positiveOnly = positiveOnly;
-		integerOnly = true;
-		minValue = positiveOnly ? new Integer(0) : Integer.MIN_VALUE;
-		maxValue = Integer.MAX_VALUE;
+		constraints = new NumericTextConstraints(positiveOnly, true);
 		addFilter();
 		loadInvalidStyle();
 	}
@@ -100,18 +80,7 @@ public class NumericTextField extends JTextField implements ComboBoxEditor
 	public NumericTextField(String text, int columns, boolean positiveOnly, boolean integerOnly)
 	{
 		super(text, columns);
-		this.positiveOnly = positiveOnly;
-		this.integerOnly = integerOnly;
-		if (integerOnly)
-		{
-			minValue = positiveOnly ? new Integer(0) : Integer.MIN_VALUE;
-			maxValue = Integer.MAX_VALUE;
-		}
-		else 
-		{
-			minValue = positiveOnly ? new Float(0.0) : Float.MIN_VALUE;
-			maxValue = Float.MAX_VALUE;
-		}
+		constraints = new NumericTextConstraints(positiveOnly, integerOnly);
 		addFilter();
 		loadInvalidStyle();
 	}
@@ -125,70 +94,17 @@ public class NumericTextField extends JTextField implements ComboBoxEditor
 		defaultForeground = getForeground();
 		defaultBackground = getBackground();
 	}
-	
-	// set the minimum allowed value for this text field. If this NumericTextField
-	// was constructed with positive only, then values less than zero are ignored.
-	public void setMinValue(Number n)
-	{
-		if (positiveOnly)
-		{
-			float f = n.floatValue();
-			if (f < 0.0)
-				return;
-		}
-		
-		if (integerOnly)
-		{
-			int i = n.intValue();
-			int max = maxValue.intValue();
-			if (i > max)
-				return;
-		}
-		else 
-		{
-			float f = n.floatValue();
-			float max = maxValue.floatValue();
-			if (f > max)
-				return;
-		}
-		minValue = n;
+
+	public NumericTextConstraints getConstraints() {
+		return this.constraints;
 	}
-	
-	// set the maximum allowed value for this text field. If this NumericTextField
-	// was constructed with positive only, then values less than zero are ignored.
-	public void setMaxValue(Number n)
-	{
-		if (positiveOnly)
-		{
-			float f = n.floatValue();
-			if (f < 0)
-				return;
-		}
-		
-		if (integerOnly)
-		{
-			int i = n.intValue();
-			int min = minValue.intValue();
-			if (i < min)
-				return;
-		}
-		else 
-		{
-			float f = n.floatValue();
-			float min = minValue.floatValue();
-			if (f < min)
-				return;
-		}
-		maxValue = n;
-	}
-	
 	/**
   	 * 	@return The value of the text field as either an Integer or a Float, 
  	 * 	depending on whether this text field allows Integers or Floats.
  	 */
 	public Number getValue()
 	{
-		if (integerOnly)
+		if (constraints.isIntergerOnly())
 			return Integer.valueOf(getText());
 		else
 			return Float.valueOf(getText());
@@ -196,7 +112,7 @@ public class NumericTextField extends JTextField implements ComboBoxEditor
 	
 	// add an Integer or Float document filter as appropriate
     private void addFilter() {
-    	if (integerOnly)
+    	if (constraints.isIntergerOnly())
     		( ( AbstractDocument ) this.getDocument() ).setDocumentFilter( new IntegerDocumentFilter() );
     	else
     		( ( AbstractDocument ) this.getDocument() ).setDocumentFilter( new FloatDocumentFilter() );
@@ -262,7 +178,7 @@ public class NumericTextField extends JTextField implements ComboBoxEditor
         	}
         	try 
         	{
-        		if (!positiveOnly && "-".equals(string))
+        		if (!constraints.isPositiveOnly() && "-".equals(string))
         		{
         			return true;	
         		}
@@ -282,7 +198,7 @@ public class NumericTextField extends JTextField implements ComboBoxEditor
         		return false;	
         	}
             int value = Integer.parseInt( string );
-            return value <= maxValue.intValue() && value >= minValue.intValue();
+            return value <= constraints.getMaxValue().intValue() && value >= constraints.getMinValue().intValue();
         }
     }
 	
@@ -342,7 +258,7 @@ public class NumericTextField extends JTextField implements ComboBoxEditor
         		{
         			return true;	
         		}
-        		if (!positiveOnly && "-".equals(string))
+        		if (!constraints.isPositiveOnly() && "-".equals(string))
         		{
         			return true;	
         		}
@@ -366,7 +282,7 @@ public class NumericTextField extends JTextField implements ComboBoxEditor
 				return true;	
 			}
             float value = Float.parseFloat( string );
-            boolean toReturn = value <= maxValue.floatValue() && value >= minValue.floatValue();
+            boolean toReturn = value <= constraints.getMaxValue().floatValue() && value >= constraints.getMinValue().floatValue();
             return toReturn;
         }
     }

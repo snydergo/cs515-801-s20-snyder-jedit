@@ -1464,8 +1464,8 @@ public class PrinterDialog extends JDialog implements ListSelectionListener
                     field.setText( integerOnly ? String.valueOf( value.intValue() ) : String.valueOf( value ) );
                 }
 
-                field.setMinValue( integerOnly ? new Integer( minMargin.intValue() ) : new Float( minMargin ) );
-                field.setMaxValue( integerOnly ? new Integer( maxMargin.intValue() ) : new Float( maxMargin ) );
+                field.getConstraints().setMinValue( integerOnly ? new Integer( minMargin.intValue() ) : new Float( minMargin ) );
+                field.getConstraints().setMaxValue( integerOnly ? new Integer( maxMargin.intValue() ) : new Float( maxMargin ) );
                 field.setToolTipText( "Min: " + minMargin + ", max: " + maxMargin );
             }
         }
